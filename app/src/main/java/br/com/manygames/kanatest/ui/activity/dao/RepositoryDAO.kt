@@ -4,9 +4,7 @@ import br.com.manygames.kanatest.model.Repository
 import java.util.*
 
 class RepositoryDAO {
-    private val repositories = ArrayList<Repository>()
-
-    fun list(): List<Repository> {
+    fun getRepositories(): List<Repository> {
         return repositories.clone() as List<Repository>
     }
 

@@ -11,26 +11,23 @@ class RepositorySynchronizer {
 
     fun getRepositories(){
         val call = RetrofitInitializer().gitService.listRepositories(1)
-        call.enqueue(buscaAlunosCallback())
+        call.enqueue(getRepositoriesCallback())
     }
 
-    private fun buscaAlunosCallback(): retrofit2.Callback<Result> {
+    private fun getRepositoriesCallback(): retrofit2.Callback<Result> {
         return object : retrofit2.Callback<Result> {
             override fun onResponse(call: Call<Result>, response: Response<Result>) {
-                Log.i("meusync", "buscaAlunosCallback")
                 val repoSync = response.body()
                 sync(repoSync)
             }
 
             override fun onFailure(call: Call<Result>, t: Throwable) {
                 Log.e("onFailure: ", t.message)
-                //bus.post(AtualizaListaAlunoEvent())
             }
         }
     }
 
     private fun sync(repoSync: Result?) {
         RepositoryDAO().add(repoSync?.items)
-        Log.i("meusync", "ENTROU!" + repoSync?.items!![0].description)
     }
 }
