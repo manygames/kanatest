@@ -5,7 +5,10 @@ import br.com.manygames.kanatest.dto.RepositoryResult
 import br.com.manygames.kanatest.model.Pull
 import br.com.manygames.kanatest.model.Repository
 import br.com.manygames.kanatest.retrofit.RetrofitInitializer
+import br.com.manygames.kanatest.events.UpdatePullsEvent
+import br.com.manygames.kanatest.events.UpdateRepositoriesEvent
 import br.com.manygames.kanatest.ui.activity.dao.RepositoryDAO
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +25,11 @@ class GithubSynchronizer {
 
             override fun onResponse(call: Call<RepositoryResult>, response: Response<RepositoryResult>) {
                 val repoSync = response.body()
-                sync(repoSync)
+                syncWithApp(repoSync)
+
+                //Criar uma interface de eventos, extrair metodo: notifyActivities
+                var bus = EventBus.getDefault()
+                bus.post(UpdateRepositoriesEvent())
             }
 
             override fun onFailure(call: Call<RepositoryResult>, t: Throwable) {
@@ -31,7 +38,7 @@ class GithubSynchronizer {
         }
     }
 
-    private fun sync(repoSync: RepositoryResult?) {
+    private fun syncWithApp(repoSync: RepositoryResult?) {
         RepositoryDAO().addRepositories(repoSync?.items)
     }
 
@@ -44,8 +51,12 @@ class GithubSynchronizer {
         return object : Callback<List<Pull>> {
 
             override fun onResponse(call: Call<List<Pull>>, response: Response<List<Pull>>) {
-                val pullSync = response.body()
-                sync(pullSync)
+                val pullsSync = response.body()
+                syncWithApp(pullsSync)
+
+                //Usar mesmo metodo do repositories
+                var bus = EventBus.getDefault()
+                bus.post(UpdatePullsEvent())
             }
 
             override fun onFailure(call: Call<List<Pull>>, t: Throwable) {
@@ -54,7 +65,7 @@ class GithubSynchronizer {
         }
     }
 
-    private fun sync(pullSync: List<Pull>?) {
+    private fun syncWithApp(pullSync: List<Pull>?) {
         RepositoryDAO().addPulls(pullSync)
     }
 }
