@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import br.com.manygames.kanatest.R
 import br.com.manygames.kanatest.model.Repository
+import br.com.manygames.kanatest.retrofit.sync.GithubSynchronizer
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.repository_item.view.*
 
-class RepositoryListAdapter (private val repositories: List<Repository>,
+class RepositoryListAdapter (private val repositories: ArrayList<Repository>,
                              private val context: Context): BaseAdapter(){
+
     override fun getView(position: Int, view: View?, parent: ViewGroup?): View {
         val createdView = LayoutInflater.from(context).inflate(R.layout.repository_item, parent, false)
 
@@ -18,6 +21,8 @@ class RepositoryListAdapter (private val repositories: List<Repository>,
         createdView.repository_item_repo_name.text = repositories[position].name
         createdView.repository_item_forks.text = repositories[position].forks.toString()
         createdView.repository_item_stars.text = repositories[position].stargazers_count.toString()
+        Picasso.get().load(repositories[position].owner!!.avatar_url).into(createdView.repository_item_user_image)
+        createdView.repository_item_username.text = repositories[position].owner!!.login
 
         return createdView
     }
@@ -33,4 +38,21 @@ class RepositoryListAdapter (private val repositories: List<Repository>,
     override fun getCount(): Int {
         return repositories.size
     }
+
+    public fun addRepositories(){
+        this.notifyDataSetChanged()
+    }
+
+    private fun nextPage(){
+        GithubSynchronizer().getRepositories(++page)
+    }
+
+    public fun listRefresh(){
+        this.notifyDataSetChanged()
+    }
+
+    companion object {
+        private var page: Int = 1
+    }
+
 }

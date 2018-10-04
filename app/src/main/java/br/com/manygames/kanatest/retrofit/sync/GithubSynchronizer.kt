@@ -15,8 +15,8 @@ import retrofit2.Response
 
 class GithubSynchronizer {
 
-    fun getRepositories(){
-        val call = RetrofitInitializer().gitService.listRepositories(1)
+    fun getRepositories(page: Int){
+        val call = RetrofitInitializer().gitService.listRepositories(page)
         call.enqueue(getRepositoriesCallback())
     }
 

@@ -5,8 +5,8 @@ import br.com.manygames.kanatest.model.Repository
 import java.util.*
 
 class RepositoryDAO {
-    fun getRepositories(): List<Repository> {
-        return repositories.clone() as List<Repository>
+    fun getRepositories(): ArrayList<Repository> {
+        return repositories.clone() as ArrayList<Repository>
     }
 
     fun addRepositories(repos: List<Repository>?) {

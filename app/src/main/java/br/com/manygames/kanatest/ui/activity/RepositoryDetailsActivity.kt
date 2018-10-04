@@ -10,7 +10,7 @@ import br.com.manygames.kanatest.model.Pull
 import br.com.manygames.kanatest.model.Repository
 import br.com.manygames.kanatest.retrofit.sync.GithubSynchronizer
 import br.com.manygames.kanatest.ui.activity.dao.RepositoryDAO
-import br.com.manygames.kanatest.ui.adapter.PullsListAdapter
+import br.com.manygames.kanatest.ui.adapter.PullListAdapter
 import kotlinx.android.synthetic.main.activity_repository_details.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -45,7 +45,7 @@ class RepositoryDetailsActivity : AppCompatActivity() {
 
     fun loadPulls() {
         val pulls = RepositoryDAO().getPulls()
-        val pullsAapter = PullsListAdapter(pulls, this)
+        val pullsAapter = PullListAdapter(pulls, this)
         with(repository_details_listview) {
             adapter = pullsAapter
             setOnItemClickListener { _, _, position, id ->

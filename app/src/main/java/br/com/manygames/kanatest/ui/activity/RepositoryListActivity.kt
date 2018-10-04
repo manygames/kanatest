@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import br.com.manygames.kanatest.R
-import br.com.manygames.kanatest.model.Repository
 import br.com.manygames.kanatest.events.UpdateRepositoriesEvent
+import br.com.manygames.kanatest.model.Repository
 import br.com.manygames.kanatest.retrofit.sync.GithubSynchronizer
 import br.com.manygames.kanatest.ui.activity.dao.RepositoryDAO
 import br.com.manygames.kanatest.ui.adapter.RepositoryListAdapter
@@ -16,12 +16,14 @@ import org.greenrobot.eventbus.Subscribe
 class RepositoryListActivity : AppCompatActivity() {
 
     private var bus: EventBus? = null
+    private var repositoriesAdapter: RepositoryListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = "Github Java Pop"
         bus = EventBus.getDefault()
         setContentView(R.layout.activity_repository_list)
-        GithubSynchronizer().getRepositories()
+        GithubSynchronizer().getRepositories(1)
     }
 
     override fun onResume() {
@@ -32,7 +34,7 @@ class RepositoryListActivity : AppCompatActivity() {
 
     fun loadRepositories() {
         val reps = RepositoryDAO().getRepositories()
-        val repositoriesAdapter = RepositoryListAdapter(reps, this)
+        repositoriesAdapter = RepositoryListAdapter(reps, this)
         with(repository_list_listview) {
             adapter = repositoriesAdapter
             setOnItemClickListener { _, _, position, id ->
@@ -43,7 +45,7 @@ class RepositoryListActivity : AppCompatActivity() {
     }
 
     private fun goToClickedRep(clickedRep: Repository) {
-        val intent = Intent(this@RepositoryListActivity, RepositoryDetailsActivity:: class.java)
+        val intent = Intent(this@RepositoryListActivity, RepositoryDetailsActivity::class.java)
         intent.putExtra("repository", clickedRep)
         startActivity(intent)
     }
@@ -53,8 +55,9 @@ class RepositoryListActivity : AppCompatActivity() {
         bus!!.unregister(this)
     }
 
+
     @Subscribe
-    fun updateRepositoriesEvent(event: UpdateRepositoriesEvent){
+    fun updateRepositoriesEvent(event: UpdateRepositoriesEvent) {
         loadRepositories()
     }
 

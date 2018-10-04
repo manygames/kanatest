@@ -6,4 +6,5 @@ import java.io.Serializable
 @JsonIgnoreProperties(ignoreUnknown = true)
 class RepositoryOwner : Serializable {
     var login: String = ""
+    var avatar_url: String = ""
 }
