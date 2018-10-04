@@ -1,8 +1,11 @@
 package br.com.manygames.kanatest.ui.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import br.com.manygames.kanatest.R
+import br.com.manygames.kanatest.model.Pull
 import br.com.manygames.kanatest.model.Repository
 import br.com.manygames.kanatest.retrofit.sync.GithubSynchronizer
 import br.com.manygames.kanatest.ui.activity.dao.RepositoryDAO
@@ -22,6 +25,18 @@ class RepositoryDetailsActivity : AppCompatActivity() {
         super.onResume()
         val pulls = RepositoryDAO().getPulls()
         val pullsAapter = PullsListAdapter(pulls, this)
-        repository_details_listview.adapter = pullsAapter
+        with(repository_details_listview) {
+            adapter = pullsAapter
+            setOnItemClickListener {_, _, position, id->
+                val clickedPull = pulls[position]
+                openClickedPullOnTheWeb(clickedPull)
+            }
+        }
+    }
+
+    private fun openClickedPullOnTheWeb(clickedPull: Pull) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setData(Uri.parse(clickedPull.html_url))
+        startActivity(intent)
     }
 }
