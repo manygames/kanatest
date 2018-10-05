@@ -1,15 +1,17 @@
 package br.com.manygames.kanatest.ui.activity.dao
 
+import android.util.Log
 import br.com.manygames.kanatest.model.Pull
 import br.com.manygames.kanatest.model.Repository
 import java.util.*
 
 class RepositoryDAO {
     fun getRepositories(): ArrayList<Repository> {
-        return repositories.clone() as ArrayList<Repository>
+        return repositories
     }
 
     fun addRepositories(repos: List<Repository>?) {
+        Log.i("WEBER", repositories.size.toString())
         repositories.addAll(repos!!)
     }
 
@@ -18,6 +20,7 @@ class RepositoryDAO {
     }
 
     fun addPulls(pullsList: List<Pull>?) {
+        pulls.clear()
         pulls.addAll(pullsList!!)
     }
 

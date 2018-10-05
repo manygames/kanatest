@@ -27,8 +27,8 @@ class GithubSynchronizer {
                 val repoSync = response.body()
                 syncWithApp(repoSync)
 
-                //Criar uma interface de eventos, extrair metodo: notifyActivities
-                var bus = EventBus.getDefault()
+                //criar uma interface de eventos, extrair metodo: notifyActivities
+                val bus = EventBus.getDefault()
                 bus.post(UpdateRepositoriesEvent())
             }
 
@@ -52,20 +52,15 @@ class GithubSynchronizer {
 
             override fun onResponse(call: Call<List<Pull>>, response: Response<List<Pull>>) {
                 val pullsSync = response.body()
-                syncWithApp(pullsSync)
 
                 //Usar mesmo metodo do repositories
                 var bus = EventBus.getDefault()
-                bus.post(UpdatePullsEvent())
+                bus.post(UpdatePullsEvent(pullsSync))
             }
 
             override fun onFailure(call: Call<List<Pull>>, t: Throwable) {
                 Log.e("onFailure", t.message)
             }
         }
-    }
-
-    private fun syncWithApp(pullSync: List<Pull>?) {
-        RepositoryDAO().addPulls(pullSync)
     }
 }

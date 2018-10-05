@@ -29,7 +29,7 @@ class RepositoryDetailsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bus!!.register(this)
-        loadPulls()
+        //loadPulls()
     }
 
     private fun openClickedPullOnTheWeb(clickedPull: Pull) {
@@ -43,9 +43,16 @@ class RepositoryDetailsActivity : AppCompatActivity() {
         bus!!.unregister(this)
     }
 
-    fun loadPulls() {
-        val pulls = RepositoryDAO().getPulls()
-        val pullsAapter = PullListAdapter(pulls, this)
+    private var pullsAapter: PullListAdapter? = null
+
+    fun loadPulls(pulls: List<Pull>) {
+
+        if(pullsAapter == null)
+            pullsAapter = PullListAdapter(pulls, this)
+
+        pullsAapter!!.clear()
+        RepositoryDAO().addPulls(pulls)
+
         with(repository_details_listview) {
             adapter = pullsAapter
             setOnItemClickListener { _, _, position, id ->
@@ -57,7 +64,7 @@ class RepositoryDetailsActivity : AppCompatActivity() {
 
     @Subscribe
     fun updatePullsEvent(event: UpdatePullsEvent){
-        loadPulls()
+        loadPulls(event.pullsSync!!)
     }
 
 }

@@ -24,6 +24,10 @@ class RepositoryListAdapter (private val repositories: ArrayList<Repository>,
         Picasso.get().load(repositories[position].owner!!.avatar_url).into(createdView.repository_item_user_image)
         createdView.repository_item_username.text = repositories[position].owner!!.login
 
+        if(position == getCount() -3) {
+            nextPage()
+        }
+        listRefresh()
         return createdView
     }
 

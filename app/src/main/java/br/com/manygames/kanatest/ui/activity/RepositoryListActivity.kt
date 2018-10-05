@@ -16,7 +16,6 @@ import org.greenrobot.eventbus.Subscribe
 class RepositoryListActivity : AppCompatActivity() {
 
     private var bus: EventBus? = null
-    private var repositoriesAdapter: RepositoryListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +28,17 @@ class RepositoryListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bus!!.register(this)
-        loadRepositories()
+        //loadRepositories()
     }
 
+    private var repositoriesAdapter: RepositoryListAdapter? = null
+
     fun loadRepositories() {
-        val reps = RepositoryDAO().getRepositories()
-        repositoriesAdapter = RepositoryListAdapter(reps, this)
+        var reps = RepositoryDAO().getRepositories()
+
+        if(repositoriesAdapter == null)
+            repositoriesAdapter = RepositoryListAdapter(reps, this)
+
         with(repository_list_listview) {
             adapter = repositoriesAdapter
             setOnItemClickListener { _, _, position, id ->
@@ -42,7 +46,12 @@ class RepositoryListActivity : AppCompatActivity() {
                 goToClickedRep(clickedRep)
             }
         }
+
+//        if (repositoriesAdapter != null && reps.count() > 0) {
+//            repositoriesAdapter!!.notifyDataSetChanged()
+//        }
     }
+
 
     private fun goToClickedRep(clickedRep: Repository) {
         val intent = Intent(this@RepositoryListActivity, RepositoryDetailsActivity::class.java)
