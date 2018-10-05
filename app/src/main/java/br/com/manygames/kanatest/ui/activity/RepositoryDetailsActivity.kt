@@ -23,6 +23,7 @@ class RepositoryDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_repository_details)
         bus = EventBus.getDefault()
         val receivedRepo: Repository = intent.getSerializableExtra("repository") as Repository
+        title = receivedRepo.name
         GithubSynchronizer().getPullsFrom(receivedRepo);
     }
 
