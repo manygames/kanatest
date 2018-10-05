@@ -12,17 +12,38 @@ import br.com.manygames.kanatest.ui.adapter.RepositoryListAdapter
 import kotlinx.android.synthetic.main.activity_repository_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import android.R.id.edit
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+
 
 class RepositoryListActivity : AppCompatActivity() {
 
     private var bus: EventBus? = null
+    private val FIRST_PAGE = 1
+    private val SCREEN__TITLE = "Github Java Pop"
+
+    private var repositoriesAdapter: RepositoryListAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        title = "Github Java Pop"
+        title = SCREEN__TITLE
         bus = EventBus.getDefault()
         setContentView(R.layout.activity_repository_list)
-        GithubSynchronizer().getRepositories(1)
+        GithubSynchronizer().getRepositories(FIRST_PAGE)
+        setupViews()
+    }
+
+    private fun setupViews() {
+        val repositories = RepositoryDAO().getRepositories()
+        repositoriesAdapter = RepositoryListAdapter(repositories, this)
+        with(repository_list_listview) {
+            adapter = repositoriesAdapter
+            setOnItemClickListener { _, _, position, id ->
+                val clickedRep = repositories[position]
+                goToClickedRep(clickedRep)
+            }
+        }
     }
 
     override fun onResume() {
@@ -31,25 +52,21 @@ class RepositoryListActivity : AppCompatActivity() {
         //loadRepositories()
     }
 
-    private var repositoriesAdapter: RepositoryListAdapter? = null
+    fun loadRepositories(reps: ArrayList<Repository>) {
+        RepositoryDAO().addRepositories(reps)
 
-    fun loadRepositories() {
-        var reps = RepositoryDAO().getRepositories()
-
-        if(repositoriesAdapter == null)
-            repositoriesAdapter = RepositoryListAdapter(reps, this)
-
-        with(repository_list_listview) {
-            adapter = repositoriesAdapter
-            setOnItemClickListener { _, _, position, id ->
-                val clickedRep = reps[position]
-                goToClickedRep(clickedRep)
-            }
-        }
-
-//        if (repositoriesAdapter != null && reps.count() > 0) {
-//            repositoriesAdapter!!.notifyDataSetChanged()
+//        if (repositoriesAdapter == null) {
+//            repositoriesAdapter = RepositoryListAdapter(RepositoryDAO().getRepositories(), this)
+//            with(repository_list_listview) {
+//                adapter = repositoriesAdapter
+//                setOnItemClickListener { _, _, position, id ->
+//                    val clickedRep = reps[position]
+//                    goToClickedRep(clickedRep)
+//                }
+//            }
 //        }
+
+        repositoriesAdapter!!.notifyDataSetChanged()
     }
 
 
@@ -64,10 +81,8 @@ class RepositoryListActivity : AppCompatActivity() {
         bus!!.unregister(this)
     }
 
-
     @Subscribe
     fun updateRepositoriesEvent(event: UpdateRepositoriesEvent) {
-        loadRepositories()
+        loadRepositories(event!!.items!!)
     }
-
 }

@@ -25,11 +25,11 @@ class GithubSynchronizer {
 
             override fun onResponse(call: Call<RepositoryResult>, response: Response<RepositoryResult>) {
                 val repoSync = response.body()
-                syncWithApp(repoSync)
+                //syncWithApp(repoSync)
 
                 //criar uma interface de eventos, extrair metodo: notifyActivities
                 val bus = EventBus.getDefault()
-                bus.post(UpdateRepositoriesEvent())
+                bus.post(UpdateRepositoriesEvent(repoSync?.items))
             }
 
             override fun onFailure(call: Call<RepositoryResult>, t: Throwable) {

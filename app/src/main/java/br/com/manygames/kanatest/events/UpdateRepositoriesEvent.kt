@@ -1,3 +1,5 @@
 package br.com.manygames.kanatest.events
 
-class UpdateRepositoriesEvent {}
+import br.com.manygames.kanatest.model.Repository
+
+class UpdateRepositoriesEvent(val items: ArrayList<Repository>?) {}
