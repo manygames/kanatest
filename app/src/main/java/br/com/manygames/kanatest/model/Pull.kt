@@ -6,7 +6,6 @@ import java.io.Serializable
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Pull : Serializable {
     var body: String = ""
-    var created_at: String = ""
     var title: String = ""
     var user: PullUser? = null
     var html_url: String = ""

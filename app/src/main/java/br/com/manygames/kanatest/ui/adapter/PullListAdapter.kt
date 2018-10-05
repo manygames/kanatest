@@ -36,7 +36,7 @@ class PullListAdapter(private val pulls: List<Pull>, private val context: Contex
         return pulls.size
     }
 
-    public fun clear(){
+    fun clear(){
         this.notifyDataSetInvalidated()
     }
 

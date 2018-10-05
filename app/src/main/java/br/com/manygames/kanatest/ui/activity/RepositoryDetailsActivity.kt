@@ -29,7 +29,6 @@ class RepositoryDetailsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bus!!.register(this)
-        //loadPulls()
     }
 
     private fun openClickedPullOnTheWeb(clickedPull: Pull) {

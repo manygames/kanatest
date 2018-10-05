@@ -27,7 +27,6 @@ class RepositoryListAdapter (private val repositories: ArrayList<Repository>,
         if(position == getCount() -3) {
             nextPage()
         }
-        listRefresh()
         return createdView
     }
 
@@ -43,16 +42,8 @@ class RepositoryListAdapter (private val repositories: ArrayList<Repository>,
         return repositories.size
     }
 
-    public fun addRepositories(){
-        this.notifyDataSetChanged()
-    }
-
     private fun nextPage(){
         GithubSynchronizer().getRepositories(++page)
-    }
-
-    public fun listRefresh(){
-        this.notifyDataSetChanged()
     }
 
     companion object {

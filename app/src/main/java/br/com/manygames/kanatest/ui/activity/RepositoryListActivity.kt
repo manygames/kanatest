@@ -12,10 +12,6 @@ import br.com.manygames.kanatest.ui.adapter.RepositoryListAdapter
 import kotlinx.android.synthetic.main.activity_repository_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import android.R.id.edit
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-
 
 class RepositoryListActivity : AppCompatActivity() {
 
@@ -49,26 +45,12 @@ class RepositoryListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         bus!!.register(this)
-        //loadRepositories()
     }
 
     fun loadRepositories(reps: ArrayList<Repository>) {
         RepositoryDAO().addRepositories(reps)
-
-//        if (repositoriesAdapter == null) {
-//            repositoriesAdapter = RepositoryListAdapter(RepositoryDAO().getRepositories(), this)
-//            with(repository_list_listview) {
-//                adapter = repositoriesAdapter
-//                setOnItemClickListener { _, _, position, id ->
-//                    val clickedRep = reps[position]
-//                    goToClickedRep(clickedRep)
-//                }
-//            }
-//        }
-
         repositoriesAdapter!!.notifyDataSetChanged()
     }
-
 
     private fun goToClickedRep(clickedRep: Repository) {
         val intent = Intent(this@RepositoryListActivity, RepositoryDetailsActivity::class.java)
